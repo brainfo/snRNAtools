@@ -132,30 +132,36 @@ def betweeness_analysis(G,name):
     plt.axis("off")
     plt.savefig('figures/{}_betweeness_annotate.pdf'.format(name))
 
-def degree_bubble(G,name,degre_threshold,color, gene_list):
+def degree_bubble(G,name,degre_threshold,color = 'black', community_colored=False):
     # largest connected component
     components = nx.connected_components(G)
     largest_component = max(components, key=len)
     H = G.subgraph(largest_component)
 
     # compute centrality
-    centrality = dict(H.degree(weight='correlation'))
+    centrality = dict(H.degree(weight='combined_score'))
 
     #### draw graph ####
-    fig, ax = plt.subplots(figsize=(20, 15))
+    
     pos = nx.spring_layout(H, k=0.15, seed=4572321)
     node_size = np.array([v for v in centrality.values()])
     node_size *= 1000.0/node_size.max()
-
-    node_color = np.where(np.fromiter(centrality.values(), dtype=float) > degre_threshold, color, mcolors.TABLEAU_COLORS['tab:gray'])
+    if community_colored == True:
+        community_index = community(H)
+        node_color = [community_index[n] for n in H]
+    else:
+        node_color = np.where(np.fromiter(centrality.values(), dtype=float) > degre_threshold, color, mcolors.TABLEAU_COLORS['tab:gray'])
     #node_color = np.where(np.isin(np.array([a for a in H.nodes()]), np.array(gene_list)), color, mcolors.TABLEAU_COLORS['tab:gray'])
     dict_sorted = sorted(centrality, key=centrality.get, reverse=True)
-    for i in dict_sorted[:5]:
-        x, y = pos[i]
-        plt.text(x, y, i, fontsize=18, color='r')
-    x, y = pos[gene_list]
-    plt.text(x, y, gene_list, fontsize=18, color='r')
+    draw_params(H, pos, node_color, node_size, dict_sorted, color, name)
 
+def community(H):
+    lpc = nx.community.label_propagation_communities(H)
+    community_index = {n: i for i, com in enumerate(lpc) for n in com}
+    return community_index
+
+def draw_params(H, pos, node_color, node_size, dict_sorted, color, name):
+    fig, ax = plt.subplots(figsize=(20, 15))
     nx.draw_networkx(
         H,
         pos=pos,
@@ -165,6 +171,12 @@ def degree_bubble(G,name,degre_threshold,color, gene_list):
         edge_color="gainsboro",
         alpha=0.8,
     )
+
+    for i in dict_sorted[:16]:
+        x, y = pos[i]
+        plt.text(x, y, i, fontsize=18, color=color)
+    # x, y = pos[gene_list]
+    # plt.text(x, y, gene_list, fontsize=18, color='r')
 
     # Title/legend
     font = {"color": "k", "fontweight": "bold", "fontsize": 20}
@@ -185,4 +197,4 @@ def degree_bubble(G,name,degre_threshold,color, gene_list):
     ax.margins(0.1, 0.05)
     fig.tight_layout()
     plt.axis("off")
-    plt.savefig('figures/{}_degree_bubble10_network.pdf'.format(name))
+    plt.savefig('figures/{}_degree_bubble_18_network.pdf'.format(name))
