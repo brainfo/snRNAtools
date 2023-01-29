@@ -6,10 +6,17 @@ import numpy as np
 import seaborn as sns
 import __future__
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+matplotlib.rcParams['font.family'] = ['sans-serif']
+matplotlib.rcParams['font.sans-serif'] = ['Arial']
+matplotlib.rcParams.update({'font.size': 18})
 
 def plot_GO(fname, name, term):
     
     df = pd.read_csv(fname,sep='\t')
+    df['Adjusted P-value'].astype(float)
     df = df.loc[df['Adjusted P-value']<0.05]
     if term == 'MP':
         term_name = [' '.join(segment.split(' ')[:-1]) for segment in df.Term]
@@ -53,11 +60,12 @@ def plot_GO(fname, name, term):
                   height=800,
                  title_x=0.5,
                  showlegend=True)
-    fig.write_image(f'figures/{name}.pdf', scale=1, engine="kaleido")
+    fig.write_image(f'figures/{name}.pdf', scale=1, engine="kaleido", font_family = "Arial")
 
 def plot_GO_one(fname, name, term):
     
-    df = pd.read_csv(fname,sep='\t',decimal=',')
+    df = pd.read_csv(fname,sep='\t',decimal='.')
+    df['Adjusted P-value'].astype(float)
     df = df.loc[df['Adjusted P-value']<0.05]
     if term == 'MP':
         term_name = [' '.join(segment.split(' ')[:-1]) for segment in df.Term]
@@ -75,9 +83,11 @@ def plot_GO_one(fname, name, term):
     norm = plt.Normalize(bonferroni.min(), bonferroni.max())
     sm = plt.cm.ScalarMappable(cmap="YlOrRd", norm=norm)
     sm.set_array([])
-
+    fig=plt.figure(figsize=(4, 3))
     ax = sns.barplot(x='Overlap', y='Term', hue='-logp', data=df_toplot, palette='YlOrRd', dodge=False)
     #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     ax.get_legend().remove()
-    ax.figure.colorbar(sm)
-    plt.savefig(f'figures/{name}.pdf', bbox_inches='tight')
+    fig.subplots_adjust(right=0.95) # create space on the right hand side
+    sub_ax = plt.axes([0.96, 0.55, 0.02, 0.3]) # add a small custom axis
+    ax.figure.colorbar(sm, cax=sub_ax)
+    plt.savefig(f'figures/{name}.pdf', bbox_inches='tight', dpi=900, transparent=True)

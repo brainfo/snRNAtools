@@ -166,6 +166,7 @@ def community(H, weight):
     community_index = {n: i for i, com in enumerate(lpc) for n in com}
     return community_index
 
+    
 def draw_params(H, pos, node_color, node_size, dict_sorted, color, name, text_annot):
     fig, ax = plt.subplots(figsize=(20, 15))
     nx.draw_networkx(
