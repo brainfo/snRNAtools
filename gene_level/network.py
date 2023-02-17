@@ -133,7 +133,7 @@ def betweeness_analysis(G,name):
     plt.axis("off")
     plt.savefig('figures/{}_betweeness_annotate.pdf'.format(name))
 
-def degree_bubble(G,name,degre_threshold,color = 'black', community_colored=False, text_annot=False):
+def degree_bubble(G,name,degre_threshold, color=None, community_colored=False, text_annot=False, gene_list=False, specify_color=False):
     # largest connected component
     components = nx.connected_components(G)
     largest_component = max(components, key=len)
@@ -146,12 +146,16 @@ def degree_bubble(G,name,degre_threshold,color = 'black', community_colored=Fals
     
     pos = nx.spring_layout(H, k=0.15, seed=4572321)
     node_size = np.array([v for v in centrality.values()])
-    node_size *= 10000.0/node_size.max()
+    node_size *= 5000.0/node_size.max()
     if community_colored == True:
         community_index = community(H, weight='combined_score')
         community_data = pd.DataFrame.from_dict(community_index, orient='index')
         community_data.to_csv(f'{name}_community.tsv', sep='\t', header=False, index=True)
         node_color = [community_index[n] for n in H]
+    if specify_color:
+        node_color = []
+        for node in H:
+            node_color.append(specify_color[node])
     else:
         node_color = np.where(np.fromiter(centrality.values(), dtype=float) > degre_threshold, color, mcolors.TABLEAU_COLORS['tab:gray'])
     #node_color = np.where(np.isin(np.array([a for a in H.nodes()]), np.array(gene_list)), color, mcolors.TABLEAU_COLORS['tab:gray'])
@@ -172,12 +176,18 @@ def draw_params(H, pos, node_color, node_size, dict_sorted, color, name, text_an
     nx.draw_networkx(
         H,
         pos=pos,
+        cmap=plt.get_cmap('coolwarm'),
         with_labels=False,
         node_color=node_color,
         node_size=node_size,
         edge_color="gainsboro",
         alpha=0.8,
+        vmin=-8,
+        vmax=8
     )
+    sm = plt.cm.ScalarMappable(cmap=plt.get_cmap('coolwarm'), norm=plt.Normalize(vmin = -8, vmax=8))
+    sm._A = []
+    plt.colorbar(sm, ax=ax)
     if text_annot:
         for i in dict_sorted:
             x, y = pos[i]
