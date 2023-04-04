@@ -167,7 +167,7 @@ def doublet_plot(sample_name, sample):
     plt.savefig(f'figures/doublet_{sample_name}_score.pdf', bbox_inches='tight')
 
 ## qc
-def qc(data, name, mtprefix, oder, batch_key=None):
+def qc(data, name, mtprefix, order=None, batch_key=None):
     """\
         Parameters
         -------
@@ -184,7 +184,7 @@ def qc(data, name, mtprefix, oder, batch_key=None):
     sc.pp.calculate_qc_metrics(data, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
 
     axes = sc.pl.violin(data, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt'], 
-                 split=True, use_raw=False, jitter=0.4, multi_panel=True, order=order,
+                 split=True, stripplot=False, use_raw=False, multi_panel=True, order=order,
                  groupby=batch_key, show=False)
     if batch_key:
         axes[1].set_ylim(0,50000)

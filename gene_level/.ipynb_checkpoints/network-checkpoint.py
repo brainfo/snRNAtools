@@ -133,11 +133,14 @@ def betweeness_analysis(G,name):
     plt.axis("off")
     plt.savefig('figures/{}_betweeness_annotate.pdf'.format(name))
 
-def degree_bubble(G,name,degre_threshold, color=None, community_colored=False, text_annot=False, gene_list=False, specify_color=False):
+def bubble(G,name,degre_threshold, color=None, community_colored=False, text_annot=False, gene_list=False, specify_color=False, size_dict=None):
     # largest connected component
     components = nx.connected_components(G)
     largest_component = max(components, key=len)
     H = G.subgraph(largest_component)
+    
+    ## full network
+    # H = G
 
     # compute centrality
     centrality = dict(H.degree(weight='combined_score'))
@@ -145,8 +148,16 @@ def degree_bubble(G,name,degre_threshold, color=None, community_colored=False, t
     #### draw graph ####
     
     pos = nx.spring_layout(H, k=0.15, seed=4572321)
-    node_size = np.array([v for v in centrality.values()])
-    node_size *= 5000.0/node_size.max()
+    if size_dict is None:
+        node_size = np.array([v for v in centrality.values()])
+        node_size *= 5000.0/node_size.max()
+    else:
+        node_size = []
+        for node in H:
+            try:
+                node_size.append(size_dict[node]*10)
+            except:
+                node_size.append(0)
     if community_colored == True:
         community_index = community(H, weight='combined_score')
         community_data = pd.DataFrame.from_dict(community_index, orient='index')
@@ -204,7 +215,7 @@ def draw_params(H, pos, node_color, node_size, dict_sorted, color, name, text_an
     ax.text(
         0.80,
         0.06,
-        "node size = degree",
+        "node size = perturbed target gene number",
         horizontalalignment="center",
         transform=ax.transAxes,
         fontdict=font,
@@ -214,4 +225,4 @@ def draw_params(H, pos, node_color, node_size, dict_sorted, color, name, text_an
     ax.margins(0.1, 0.05)
     fig.tight_layout()
     plt.axis("off")
-    plt.savefig('figures/{}_degree_bubble_network.pdf'.format(name))
+    plt.savefig('figures/{}_bubble_network.pdf'.format(name))
