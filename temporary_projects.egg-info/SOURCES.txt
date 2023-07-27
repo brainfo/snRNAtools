@@ -244,8 +244,11 @@ ML/Run.ipynb
 ML/classification.ipynb
 ML/run-01-demo=mix_vb_single_run-model=mix+mult.ipynb
 gene_level/__init__.py
+gene_level/intersect_report.R
 gene_level/network.py
 gene_level/.ipynb_checkpoints/network-checkpoint.py
+gene_level/__pycache__/__init__.cpython-310.pyc
+gene_level/__pycache__/__init__.cpython-39.pyc
 gene_level/__pycache__/network.cpython-310.pyc
 gene_level/__pycache__/network.cpython-38.pyc
 gene_level/__pycache__/network.cpython-39.pyc
@@ -258,11 +261,14 @@ sc_utils/README.md
 sc_utils/__init__.py
 sc_utils/cluster.py
 sc_utils/scanpy_utils.py
+sc_utils/setup.py
 sc_utils/.ipynb_checkpoints/scanpy_utils-checkpoint.py
 sc_utils/__pycache__/__init__.cpython-310.pyc
 sc_utils/__pycache__/__init__.cpython-38.pyc
+sc_utils/__pycache__/__init__.cpython-39.pyc
 sc_utils/__pycache__/scanpy_utils.cpython-310.pyc
 sc_utils/__pycache__/scanpy_utils.cpython-38.pyc
+sc_utils/__pycache__/scanpy_utils.cpython-39.pyc
 temporary_projects.egg-info/PKG-INFO
 temporary_projects.egg-info/SOURCES.txt
 temporary_projects.egg-info/dependency_links.txt

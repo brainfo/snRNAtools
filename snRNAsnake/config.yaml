@@ -1,0 +1,6 @@
+project:
+  workdir: /proj/sens2022004/nobackup/wharf/hongki/hongki-sens2022004/human_placenta/pcos
+  project_name: pcos_placenta
+  h5dir: /proj/sens2022004/nobackup/wharf/hongki/hongki-sens2022004/human_placenta/pcos/output/cellbender
+files:
+  info: /proj/sens2022004/nobackup/wharf/hongki/hongki-sens2022004/human_placenta/pcos/info/pcos_placenta_info.tsv

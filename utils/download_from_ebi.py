@@ -1,4 +1,5 @@
-#!/home/hong/anaconda3/bin/python
+##!/home/hong/anaconda3/bin/python
+## activate your envionment (with the python you want first)
 
 ## This script is for downloading fq files from json files ##
 ## I usually collected these json files from EBI website ##
@@ -12,7 +13,8 @@ import itertools
 import pandas as pd
 
 ## Parameters
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='''download fq files from EBI website''',
+    epilog="""Contact scilavisher@gmail.com for anyquestions""")
 
 parser.add_argument('-n','--threads', action='store', dest='threads', type=int, help='threads')
 parser.add_argument('-i','--input', action='store', dest='input', help='json or sdrf file')
